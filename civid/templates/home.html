@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CivID - One ID for CivCraft</title>
+  </head>
+  <body>
+    {% if 'username' in session %}
+      Signed in as {{ session['username'] }}.
+    {% else %}
+      Not signed in.
+    {% endif %}
+  </body>
+</html>
