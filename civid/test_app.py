@@ -177,6 +177,23 @@ class TestPostAuthorize:
             assert res.status_code == 302
             assert res.location == 'http://test.com?state=12345&error=declined'
 
+    def test_reformat_redirect_uri(self):
+        with app.test_client() as tc:
+            with tc.session_transaction() as session:
+                session['username'] = 'Rykleos'
+                session['csrf_token'] = 'csrftok'
+
+            res = tc.post(
+                '/authorize?redirect_uri=http%3A%2F%2Fabc.xyz%2Fpath%2Fpage%3Fsomething%3Dblah',
+                data={
+                    'csrf_token': 'csrftok',
+                    'action': 'decline',
+                }
+            )
+
+            assert res.status_code == 302
+            assert res.location == 'http://abc.xyz/path/page?error=declined'
+
 class TestUserInfo:
     # This timestamp is a few seconds after the code's on purpose
     @freeze_time('2015-10-28 10:28:45')
