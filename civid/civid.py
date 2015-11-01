@@ -4,11 +4,13 @@ from tokens import Tokenizer, InvalidCodeError, InvalidTokenError
 from urlparse import urlparse
 from urllib import urlencode
 from datetime import timedelta
+from flask_limiter import Limiter
 import os
 import uuid
 import validators
 
 app = Flask(__name__)
+limiter = Limiter(app, global_limits=['20 per minute'])
 
 # Load configuration from the environment
 secret_key = os.environ.get('SECRET_KEY')
@@ -30,6 +32,7 @@ def make_session_permanent():
 @app.errorhandler(400)
 @app.errorhandler(401)
 @app.errorhandler(404)
+@app.errorhandler(429)
 @app.errorhandler(500)
 @app.errorhandler(Exception)
 def show_error_page(error):
