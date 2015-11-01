@@ -8,8 +8,10 @@ from flask_limiter import Limiter
 import os
 import uuid
 import validators
+import jinja2_highlight # This isn't used directly, but it's a sanity check
 
 app = Flask(__name__)
+app.jinja_options['extensions'].append('jinja2_highlight.HighlightExtension')
 limiter = Limiter(app, global_limits=['20 per minute'])
 
 # Load configuration from the environment
@@ -17,10 +19,12 @@ secret_key = os.environ.get('SECRET_KEY')
 signing_key = os.environ.get('SIGNING_KEY')
 if not secret_key: raise Exception("SECRET_KEY not set")
 if not signing_key: raise Exception("SIGNING_KEY not set")
+
 app.config['SERVER_NAME'] = os.environ.get('SERVER_NAME')
 app.config['SECRET_KEY'] = secret_key
 app.config['BOT_NAME'] = 'edsgar'
 app.config['SESSION_LIFETIME_DAYS'] = 90 # Used in a template
+
 tokenizer = Tokenizer(signing_key)
 
 app.permanent_session_lifetime = timedelta(days=app.config['SESSION_LIFETIME_DAYS'])

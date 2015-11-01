@@ -5,10 +5,12 @@ Flask-Limiter==0.8.5
 freezegun==0.3.5
 itsdangerous==0.24
 Jinja2==2.8
+jinja2-highlight==0.6.1
 limits==1.0.9
 MarkupSafe==0.23
 py==1.4.30
 pycparser==2.14
+Pygments==2.0.2
 pytest==2.8.2
 python-dateutil==2.4.2
 six==1.10.0

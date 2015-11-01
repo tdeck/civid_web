@@ -32,5 +32,48 @@
         </div>
       </div>
     </header>
+    <section class="container">
+      <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+          <h2>Add CivID to your website</h2>
+          <p class="lead">
+            Want to verify your users? Tired of writing login and password management code?
+            Integrating with CivID couldn't be easier.
+          </p>
+          <ol>
+            <li>
+              To log someone in, send them to <code>http://id.civlabs.com/authorize</code>.
+              <br>
+              Provide these parameters in the URL:
+              <dl class="dl-horizontal">
+                <dt><code>redirect_uri</code></dt><dd>The URL of a page in your app that will handle the login.
+                <dt><code>state</code></dt><dd>An optional string that will get passed back with the identifying user so you can keep track of them.
+              </dl>
+            </li>
+            <li>
+              When the user clicks Identify, they will get redirected to your <code>redirect_uri</code> page with these query parameters:
+              <dl class="dl-horizontal">
+                <dt><code>code</code></dt><dd>An identity code that can be exchanged for the user's Minecraft username. These expire after 30 seconds.</dd>
+                <dt><code>state</code></dt><dd>The <code>state</code> you sent along with the user</dd>
+              </dl>
+            </li>
+            <li>
+              From your application's server, make a GET request to <code>http://id.civlabs.com/userinfo?code=</code>
+              with the code you got from step 2. You will get a JSON response like this:
+              {% highlight 'JSON' %}
+{
+  "user": "lgp30",
+  "display_name": "LGP30"
+}
+              {% endhighlight %}
+              <dl class="dl-horizontal">
+                <dt><code>user</code></dt><dd>The verified canonical Minecraft username in all lowercase.</dd>
+                <dt><code>display_name</code></dt><dd>The canonical capitalization of the username. This could be changed by the user.</dd>
+              </dl>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
   </main>
 {% endblock %}
