@@ -1,4 +1,5 @@
 from freezegun import freeze_time
+from werkzeug.exceptions import NotFound, HTTPException
 import os
 import flask
 import json
@@ -213,3 +214,28 @@ class TestUserInfo:
         with app.test_client() as tc:
             res = tc.get('/userinfo?code=DYmnMVE.COy3gA.7d9QCfiz1EWI0SIxPYyPdSiAl4g')
             assert res.status_code == 400
+
+class TestErrorHandling:
+    def test_error_page_with_HttpException(self):
+        @app.route('/404')
+        def notfound():
+            raise NotFound('Page, what page?')
+
+        with app.test_client() as tc:
+            res = tc.get('/404')
+            assert res.status_code == 404
+            assert 'Not Found' in res.data
+            assert 'Page, what page?' in res.data
+            # We need to make sure it's not reverting to the built-in page
+            assert 'panel' in res.data
+
+    def test_error_page_with_arbitrary_exception(self):
+        @app.route('/500')
+        def servererror():
+            None.x
+
+        with app.test_client() as tc:
+            res = tc.get('/500')
+            assert res.status_code == 500
+            assert 'Server Error' in res.data
+            assert 'Something went wrong!' in res.data

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <div class="panel panel-danger col-sm-6 col-sm-offset-3 offtop">
+        <div class="panel-heading">
+          {{ title|e }}
+        </div>
+        <div class="panel-body">
+          <p class="bigtext">
+            {{ message|e }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

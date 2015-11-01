@@ -1,5 +1,5 @@
 from flask import Flask, session, render_template, redirect, url_for, request, jsonify
-from werkzeug.exceptions import BadRequest, Unauthorized, NotFound
+from werkzeug.exceptions import BadRequest, Unauthorized, NotFound, HTTPException
 from tokens import Tokenizer, InvalidCodeError, InvalidTokenError
 from urlparse import urlparse
 from urllib import urlencode
@@ -26,6 +26,29 @@ app.permanent_session_lifetime = timedelta(days=app.config['SESSION_LIFETIME_DAY
 def make_session_permanent():
     session.permanent = True
 
+# This is needed because of a stupid, old bug in Flask
+@app.errorhandler(400)
+@app.errorhandler(401)
+@app.errorhandler(404)
+@app.errorhandler(500)
+@app.errorhandler(Exception)
+def show_error_page(error):
+    # TODO log the error better
+    print "Caught an error", error
+
+    code = 500
+    title = 'Server Error'
+    message = 'Something went wrong!'
+
+    # Have to do it this way because of a bug in Flask
+    # https://github.com/mitsuhiko/flask/issues/941
+    if isinstance(error, HTTPException):
+        code = error.code
+        title = error.name
+        message = error.description
+
+    return render_template('error.html', title=title, message=message), code
+
 def expected_csrf_token():
     if 'csrf_token' not in session:
         session['csrf_token'] = uuid.uuid4().hex
@@ -51,7 +74,7 @@ def login(token):
     try:
         username = tokenizer.validate_login_token(token)
     except InvalidTokenError:
-        # TODO this is a user-facing message and should be better 
+        # TODO this is a user-facing message and should be better
         raise Unauthorized('Invalid or expired login code')
 
     session['username'] = username
@@ -85,11 +108,11 @@ def authorize():
             raise BadRequest('No authenticated user to identify')
 
         target = '{}://{}{}'.format(
-            redirect_uri.scheme, 
-            redirect_uri.netloc, 
+            redirect_uri.scheme,
+            redirect_uri.netloc,
             redirect_uri.path
         )
-        
+
         response = {}
         if 'state' in request.args: response['state'] = request.args['state']
 
@@ -101,7 +124,7 @@ def authorize():
         return redirect(target + '?' + urlencode(response))
     else:
         return render_template(
-            'authorize.html', 
+            'authorize.html',
             app_domain=redirect_uri.netloc,
             csrf_token=expected_csrf_token()
         )
