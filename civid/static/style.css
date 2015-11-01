@@ -1,0 +1,36 @@
+body {
+  font-size: 20px;
+}
+
+main {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+img.logo {
+  height: 48px;
+}
+
+nav img.logo {
+  margin: 5px;
+}
+
+.offtop {
+  margin-top: 80px;
+}
+
+.bigtext {
+  font-size: 28px;
+}
+
+/* Center on >= small devices */
+@media (min-width: 768px) { 
+  .center-sm {
+    text-align: center;
+    padding-top: 10px;
+  }
+}
+
+h1,h2 {
+  text-align: center;
+}

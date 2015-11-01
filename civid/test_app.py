@@ -23,6 +23,7 @@ class TestLogin:
         with app.test_client() as tc:
             res = tc.get('/in/Vnthii-2D3jPp-Ownf0ptixs', follow_redirects=True)
             assert res.status_code == 200
+            assert 'signed in as 0ptixs' in res.data
 
             assert flask.session['username'] == '0ptixs'
 

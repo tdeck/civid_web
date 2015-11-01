@@ -1,13 +1,36 @@
-<!doctype html>
-<html>
-  <head>
-    <title>CivID - One ID for CivCraft</title>
-  </head>
-  <body>
-    {% if 'username' in session %}
-      Signed in as {{ session['username'] }}.
-    {% else %}
-      Not signed in.
-    {% endif %}
-  </body>
-</html>
+{% extends "base.html" %}
+{% block body %}
+  <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="row">
+          <div class="navbar-header col-sm-1">
+            <img class="logo" src="{{ url_for('static', filename='logo_transparent.png') }}" alt="CivID logo">
+          </div>
+          {% if 'username' in session %}
+            <div class="col-sm-8 center-sm bigtext">
+                Signed in as <strong>{{ session['username'] }}</strong>
+            </div>
+            <div class="col-sm-2 navbar-text">
+              <a class="navbar-link" href="{{ url_for('logout') }}">Sign out</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <header class="jumbotron">
+      <h1>Sign in with CivID</h1>
+      <div class="container">
+        <div class="row">
+          <dl class="dl-horizontal lead col-md-8 col-md-offset-2">
+            <dt>Convenient</dt><dd>No passwords to remember</dd>
+            <dt>Trusted</dt><dd>Protect your Civcraft reputation by proving that you're you</dd>
+            <dt>Safe</dt><dd>No need to enter your Minecraft password</dd>
+            <dt>Secure</dt><dd>Verified using industry-standard encryption techniques</dd>
+          </dl>
+        </div>
+      </div>
+    </header>
+  </main>
+{% endblock %}

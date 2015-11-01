@@ -3,6 +3,7 @@ from werkzeug.exceptions import BadRequest, Unauthorized, NotFound
 from tokens import Tokenizer, InvalidCodeError, InvalidTokenError
 from urlparse import urlparse
 from urllib import urlencode
+from datetime import timedelta
 import os
 import uuid
 import validators
@@ -14,9 +15,16 @@ secret_key = os.environ.get('SECRET_KEY')
 signing_key = os.environ.get('SIGNING_KEY')
 if not secret_key: raise Exception("SECRET_KEY not set")
 if not signing_key: raise Exception("SIGNING_KEY not set")
+app.config['SERVER_NAME'] = os.environ.get('SERVER_NAME')
 app.config['SECRET_KEY'] = secret_key
 app.config['BOT_NAME'] = 'edsgar'
+app.config['SESSION_LIFETIME_DAYS'] = 90 # Used in a template
 tokenizer = Tokenizer(signing_key)
+
+app.permanent_session_lifetime = timedelta(days=app.config['SESSION_LIFETIME_DAYS'])
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
 
 def expected_csrf_token():
     if 'csrf_token' not in session:
@@ -47,7 +55,7 @@ def login(token):
         raise Unauthorized('Invalid or expired login code')
 
     session['username'] = username
-    return redirect(url_for('home'))
+    return render_template('logged_in.html')
 
 @app.route('/out', methods=['GET'])
 def logout():
