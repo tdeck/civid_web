@@ -5,6 +5,7 @@ from urlparse import urlparse
 from urllib import urlencode
 from datetime import timedelta
 from flask_limiter import Limiter
+from flask.ext.cors import cross_origin
 import os
 import uuid
 import validators
@@ -137,6 +138,7 @@ def authorize():
         )
 
 @app.route('/userinfo', methods=['GET'])
+@cross_origin()
 def userinfo():
     code = request.args.get('code')
     if not code:
