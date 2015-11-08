@@ -33,7 +33,8 @@ def test_identity_codes():
 
     code = None
     with freeze_time('2015-10-17 14:00:00'):
-        code = tokenizer.create_identity_code(user)
+        # Being in a session will turn the username into unicode :S
+        code = tokenizer.create_identity_code(unicode(user))
 
         assert tokenizer.validate_identity_code(code) == user
 

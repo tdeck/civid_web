@@ -30,7 +30,7 @@ def scramble_username(username):
     >>> scramble_username('lgp30')
     'nXRlB'
     """
-    return string.translate(username, scrambler)
+    return string.translate(str(username), scrambler)
 
 def unscramble_username(ciphertext):
     """
