@@ -9,6 +9,7 @@ from flask.ext.cors import cross_origin
 import os
 import uuid
 import validators
+import logging
 import jinja2_highlight # This isn't used directly, but it's a sanity check
 
 app = Flask(__name__)
@@ -41,8 +42,7 @@ def make_session_permanent():
 @app.errorhandler(500)
 @app.errorhandler(Exception)
 def show_error_page(error):
-    # TODO log the error better
-    print "Caught an error", error
+    logging.exception(error)
 
     code = 500
     title = 'Server Error'
