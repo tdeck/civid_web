@@ -12,6 +12,8 @@ import validators
 import logging
 import jinja2_highlight # This isn't used directly, but it's a sanity check
 
+logging.basicConfig(level=logging.INFO)
+
 app = Flask(__name__)
 app.jinja_options['extensions'].append('jinja2_highlight.HighlightExtension')
 limiter = Limiter(app, global_limits=['20 per minute'])
@@ -31,8 +33,9 @@ tokenizer = Tokenizer(signing_key)
 
 app.permanent_session_lifetime = timedelta(days=app.config['SESSION_LIFETIME_DAYS'])
 @app.before_request
-def make_session_permanent():
+def before_request():
     session.permanent = True
+    logging.info("Request: " + request.url)
 
 # This is needed because of a stupid, old bug in Flask
 @app.errorhandler(400)
@@ -154,5 +157,6 @@ def userinfo():
         raise BadRequest('Invalid or expired identity code')
 
 if __name__ == '__main__':
+    print "Enabling debug"
     app.debug = True
     app.run()
