@@ -12,8 +12,6 @@ import validators
 import logging
 import jinja2_highlight # This isn't used directly, but it's a sanity check
 
-logging.basicConfig(level=logging.INFO)
-
 app = Flask(__name__)
 app.jinja_options['extensions'].append('jinja2_highlight.HighlightExtension')
 limiter = Limiter(app, global_limits=['20 per minute'])
@@ -35,7 +33,6 @@ app.permanent_session_lifetime = timedelta(days=app.config['SESSION_LIFETIME_DAY
 @app.before_request
 def before_request():
     session.permanent = True
-    logging.info("Request: " + request.url)
 
 # This is needed because of a stupid, old bug in Flask
 @app.errorhandler(400)
@@ -45,7 +42,7 @@ def before_request():
 @app.errorhandler(500)
 @app.errorhandler(Exception)
 def show_error_page(error):
-    logging.exception(error)
+    app.logger.exception(error)
 
     code = 500
     title = 'Server Error'
@@ -160,3 +157,6 @@ if __name__ == '__main__':
     print "Enabling debug"
     app.debug = True
     app.run()
+else:
+    app.logger.addHandler(logging.StreamHandler())
+    app.logger.setLevel(logging.INFO)
