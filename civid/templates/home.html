@@ -40,7 +40,7 @@
           </p>
           <ol>
             <li>
-              To log someone in, send them to <code>http://id.civlabs.com/authorize</code>.
+              To log someone in, send them to <code>https://id.civlabs.com/authorize</code>.
               <br>
               Provide these parameters in the URL:
               <dl class="dl-horizontal">
@@ -56,7 +56,7 @@
               </dl>
             </li>
             <li>
-              From your application's server, make a GET request to <code>http://id.civlabs.com/userinfo?code=</code>
+              From your application's server, make a GET request to <code>https://id.civlabs.com/userinfo?code=</code>
               with the code you got from step 2. You will get a JSON response like this:
               {% highlight 'JSON' %}
 {
